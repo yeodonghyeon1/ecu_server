@@ -49,7 +49,7 @@ def main():
                 data = data[filename_end_idx + len(b'--EOF--'):]
                 print(f'파일 이름 수신: {filename}')
                 print(data)
-                save_path = os.path.join(load, filename)# LCA면 load는 org_video, LCB면 cv_video
+                save_path = os.path.join('../org_video', filename)
                 recv_file(client_socket, save_path)
                 print(f'{filename} 파일이 성공적으로 저장되었습니다.')
                 client_socket.send(b'ok')  # 다음 파일 준비 완료
