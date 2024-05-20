@@ -24,36 +24,40 @@ def main():
 
         while True:
             data = client_socket.recv(4096)
-            print(data)
-            if data.decode() == 'LCA':
-                load = "../ecu_server/org_video"
-            elif data.decode() == 'LCB':
-                load = "../ecu_server/cv_video"
+            load = ""
+            try:
+                if data.decode() == 'LCA':
+                    load = "../camera/org_video"
+                elif data.decode() == 'LCB':
+                    load = "../camera/cv_video"
+                if data.decode()[0:2] == "LC":
+                    list_file = ""
+                    for i in os.listdir(load):
+                        i = i + " "
+                        list_file = list_file + i
+                    if list_file == "":
+                        list_file = "NOT_FILE"
+                    client_socket.send(list_file.encode())
+                if not data:
+                    break
 
-            if data.decode()[0:1] == "LC":
-                list_file = ""
-                for i in os.listdir(load):
-                    i = i + " "
-                    list_file = list_file + i
-                if list_file == "":
-                    list_file = "NOT_FILE"
-                client_socket.send(list_file.encode())
-            if not data:
-                break
-
-            filename_end_idx = data.find(b'--EOF--')
-            if filename_end_idx != -1:
-                filename = data[:filename_end_idx].decode()
-                dataname = filename[0:2]
-                filename = filename[3:]
-                data = data[filename_end_idx + len(b'--EOF--'):]
-                print(f'파일 이름 수신: {filename}')
-                print(data)
-                save_path = os.path.join('../org_video', filename)
-                recv_file(client_socket, save_path)
-                print(f'{filename} 파일이 성공적으로 저장되었습니다.')
-                client_socket.send(b'ok')  # 다음 파일 준비 완료
-
+                filename_end_idx = data.find(b'--EOF--')
+                if filename_end_idx != -1:
+                    filename = data[:filename_end_idx].decode()
+                    dataname = filename[0:3]
+                    filename = filename[3:]
+                    data = data[filename_end_idx + len(b'--EOF--'):]
+                    print(f'파일 이름 수신: {filename}')
+                    print(dataname)
+                    if dataname == "ORG":
+                        save_path = os.path.join('../camera/org_video', filename)
+                    elif dataname == "CVV":
+                        save_path = os.path.join('../camera/cv_video', filename)
+                    recv_file(client_socket, save_path)
+                    print(f'{filename} 파일이 성공적으로 저장되었습니다.')
+                    client_socket.send(b'ok')  # 다음 파일 준비 완료
+            except:
+                pass
         client_socket.close()
         print('연결 종료')
 
