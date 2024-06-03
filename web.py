@@ -10,9 +10,9 @@ app = Flask(__name__)
 
 VIDEO_DIRECTORIES = {
 
-    "org_video": "C:\\Users\\rvlab\\camera\\org_video",
+    "org_video": "../camera/org_video",
 
-    "composit": "C:\\Users\\rvlab\\camera\\composit"
+    "composit": "../camera/composit"
 
 }
 
@@ -58,4 +58,4 @@ def video_list():
 
 if __name__ == '__main__':
 
-    app.run(debug=True)
+    app.run(debug=True, host='10.200.122.91', port=6060)
