@@ -12,7 +12,7 @@ VIDEO_DIRECTORIES = {
 
     "org_video": "../camera/org_video",
 
-    "composit": "../camera/composit"
+    "composit": "../camera/cv_video"
 
 }
 
@@ -58,4 +58,4 @@ def video_list():
 
 if __name__ == '__main__':
 
-    app.run(debug=True, host='10.200.122.91', port=6060)
+    app.run(debug=True, host='192.168.0.108', port=6060)

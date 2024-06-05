@@ -1,6 +1,6 @@
 import socket
 import os
-
+import ffmpeg
 def recv_file(sock, filename):
     with open(filename, 'wb') as f:
         while True:
@@ -10,9 +10,11 @@ def recv_file(sock, filename):
                 f.write(data[:data.find(b'--EOF--')])
                 break
             f.write(data)
+    
+
 
 def main():
-    host = '192.168.112.1'
+    host = '192.168.0.108'
     port = 12345
     server_socket = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
     server_socket.bind((host, port))
@@ -21,6 +23,7 @@ def main():
     
     while True:
         client_socket, addr = server_socket.accept()
+        # client_socket.settimeout(120)
         print(f'{addr}에 연결됨')
         while True:
             try:
@@ -43,6 +46,7 @@ def main():
                     if list_file == "":
                         list_file = "NOT_FILE"
                     list_file = "LCA " + list_file
+                    print(list_file)
                     client_socket.send(list_file.encode())
                 if not data:
                     break
@@ -62,18 +66,33 @@ def main():
                         continue
                     print(dataname)
                     if dataname == "ORG":
+                        temp_path = os.path.join('../camera/temp', filename)
                         save_path = os.path.join('../camera/org_video', filename)
                     elif dataname == "CVV":
+                        temp_path = os.path.join('../camera/temp', filename)
                         save_path = os.path.join('../camera/cv_video', filename)
-                    recv_file(client_socket, save_path)
+                    recv_file(client_socket, temp_path)
                     print(f'{filename} 파일이 성공적으로 저장되었습니다.')
+                    print(save_path)
+                    try:
+                        (
+                            ffmpeg
+                            .input(temp_path)
+                            .output(save_path, vcodec='libx264', acodec='aac')
+                            .run(overwrite_output=True)
+                        )
+                        print("변환 완료:", save_path)
+                        os.remove(temp_path)
+                    except:
+                        print("변환 중 에러 발생:")
+                        #변환
                     # client_socket.send(b'ok')  # 다음 파일 준비 완료
             except:
-                pass
-        client_socket.close()
+                client_socket.close()
+                break
         print('연결 종료')
 
-    server_socket.close()
+    
 
 if __name__ == '__main__':
     main()
