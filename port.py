@@ -21,6 +21,7 @@ def main():
     
     while True:
         client_socket, addr = server_socket.accept()
+        client_socket.settimeout(120)
         print(f'{addr}에 연결됨')
         while True:
             try:
@@ -59,7 +60,7 @@ def main():
                     if filename == "":
                         print("sd")
                         client_socket.send(b"--ERORR--")
-                        continue
+                        continue    
                     print(dataname)
                     if dataname == "ORG":
                         save_path = os.path.join('../camera/org_video', filename)
@@ -68,12 +69,15 @@ def main():
                     recv_file(client_socket, save_path)
                     print(f'{filename} 파일이 성공적으로 저장되었습니다.')
                     # client_socket.send(b'ok')  # 다음 파일 준비 완료
-            except:
-                pass
-        client_socket.close()
-        print('연결 종료')
+                if data.decode() == 'END':
+                    client_socket.close() 
+                    print('연결 종료')
+                    break
+                
+            except socket.timeout:
+                print(f"Connection timed out with {client_socket}")
+                break
 
-    server_socket.close()
 
 if __name__ == '__main__':
     main()

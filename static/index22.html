@@ -1,0 +1,321 @@
+<!DOCTYPE html>
+
+<html lang="ko">
+
+<head>
+
+    <meta charset="UTF-8">
+
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+    <title>ECU BlackBox</title>
+
+    <style>
+
+        body {
+
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+
+            background-color: #1c1e22;
+
+            color: #ffffff;
+
+            margin: 0;
+
+            padding: 0;
+
+            display: flex;
+
+            flex-direction: column;
+
+            align-items: center;
+
+            justify-content: center;
+
+            min-height: 100vh;
+
+        }
+
+        .container {
+
+            text-align: center;
+
+            width: 100%;
+
+            max-width: 900px;
+
+        }
+
+        .video-section {
+
+            display: flex;
+
+            flex-direction: column;
+
+            align-items: center;
+
+            background-color: #2c3036;
+
+            border-radius: 8px;
+
+            box-shadow: 0 4px 10px rgba(0, 0, 0, 0.3);
+
+            padding: 20px;
+
+            width: 100%;
+
+            max-width: 900px;
+
+        }
+
+        .video-player-container {
+
+            display: flex;
+
+            justify-content: space-between;
+
+            width: 100%;
+
+            margin-bottom: 20px;
+
+        }
+
+        .video-player-item {
+
+            width: 48%;
+
+            text-align: center;
+
+        }
+
+        .video-player-container video {
+
+            width: 100%;
+
+            border-radius: 8px;
+
+        }
+
+        .video-list-container, .date-filter-container {
+
+            width: 100%;
+
+            margin-bottom: 20px;
+
+            display: flex;
+
+            justify-content: center;
+
+        }
+
+        .video-list-container select, .date-filter-container input {
+
+            padding: 10px;
+
+            border-radius: 8px;
+
+            background-color: #2c3036;
+
+            color: #e0e0e0;
+
+            border: 1px solid #4a4f57;
+
+        }
+
+        .video-list-container select {
+
+            width: 100%;
+
+        }
+
+        .date-filter-container input {
+
+            width: 200px;
+
+        }
+
+        .video-list-container select option, .date-filter-container input {
+
+            background-color: #2c3036;
+
+            color: #e0e0e0;
+
+        }
+
+    </style>
+
+</head>
+
+<body>
+
+    <div class="container">
+
+        <div class="video-section">
+
+            <div class="video-player-container">
+
+                <div class="video-player-item">
+
+                    <h2>원본영상</h2>
+
+                    <video id="videoPlayer1" controls>
+
+                        <source src="" type="video/mp4">
+
+                        Your browser does not support the video tag.
+
+                    </video>
+
+                </div>
+
+                <div class="video-player-item">
+
+                    <h2>합성영상</h2>
+
+                    <video id="videoPlayer2" controls>
+
+                        <source src="" type="video/mp4">
+
+                        Your browser does not support the video tag.
+
+                    </video>
+
+                </div>
+
+            </div>
+
+            <div class="date-filter-container">
+
+                <input type="date" id="dateFilter" onchange="filterVideosByDate(event)">
+
+            </div>
+
+            <div class="video-list-container">
+
+                <select id="videoListSelect" onchange="selectVideo(event)">
+
+                    <option value="">비디오를 선택하세요</option>
+
+                </select>
+
+            </div>
+
+        </div>
+
+    </div>
+
+
+
+    <script>
+
+        let videos = [];
+
+
+
+        function selectVideo(event) {
+
+            const selectedVideo = event.target.value;
+
+            if (selectedVideo) {
+
+                const orgVideoPlayer = document.getElementById('videoPlayer1');
+
+                const compositVideoPlayer = document.getElementById('videoPlayer2');
+
+
+
+                const orgVideoSrc = `/videos/org_video/${selectedVideo}`;
+
+                const compositVideoSrc = `/videos/composit/composit_${selectedVideo}`;
+
+
+
+                orgVideoPlayer.src = orgVideoSrc;
+
+                compositVideoPlayer.src = compositVideoSrc;
+
+
+
+                orgVideoPlayer.play();
+
+                compositVideoPlayer.play();
+
+            }
+
+        }
+
+
+
+        function filterVideosByDate(event) {
+
+            const filterDate = new Date(event.target.value);
+
+            const filterYear = filterDate.getFullYear();
+
+            const filterMonth = (`0${filterDate.getMonth() + 1}`).slice(-2);
+
+            const filterDay = (`0${filterDate.getDate()}`).slice(-2);
+
+
+
+            const videoListSelect = document.getElementById('videoListSelect');
+
+            videoListSelect.innerHTML = '<option value="">비디오를 선택하세요</option>';
+
+
+
+            const filteredVideos = videos.filter(video => 
+
+                video.includes(`${filterYear}y_${filterMonth}m_${filterDay}d`)
+
+            );
+
+
+
+            filteredVideos.forEach(video => {
+
+                const option = document.createElement('option');
+
+                option.value = video;
+
+                option.textContent = video;
+
+                videoListSelect.appendChild(option);
+
+            });
+
+        }
+
+
+
+        // 동영상 목록을 불러오는 스크립트
+
+        fetch('/video-list')
+
+        .then(response => response.json())
+
+        .then(data => {
+
+            videos = data;
+
+            const videoListSelect = document.getElementById('videoListSelect');
+
+            videos.forEach(video => {
+
+                const option = document.createElement('option');
+
+                option.value = video;
+
+                option.textContent = video;
+
+                videoListSelect.appendChild(option);
+
+            });
+
+        });
+
+    </script>
+
+</body>
+
+</html>

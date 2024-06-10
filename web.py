@@ -1,4 +1,4 @@
-from flask import Flask, send_from_directory, jsonify
+from flask import Flask, send_from_directory, jsonify, render_template
 
 import os
 
@@ -12,7 +12,7 @@ VIDEO_DIRECTORIES = {
 
     "org_video": "../camera/org_video",
 
-    "composit": "../camera/composit"
+    "composit": "../camera/cv_video"
 
 }
 
@@ -22,8 +22,7 @@ VIDEO_DIRECTORIES = {
 
 def index():
 
-    return app.send_static_file('index.html')
-
+    return render_template('index.html')
 
 
 @app.route('/videos/<category>/<path:filename>')
@@ -58,4 +57,4 @@ def video_list():
 
 if __name__ == '__main__':
 
-    app.run(debug=True, host='10.200.122.91', port=6060)
+    app.run(debug=True, host='192.168.0.107', port=6060)
