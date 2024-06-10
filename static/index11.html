@@ -1,65 +1,47 @@
 <!DOCTYPE html>
-
 <html lang="en">
-
 <head>
-
     <meta charset="UTF-8">
-
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-
-    <title>Video Player</title>
-
+    <title>Rounded Container</title>
     <style>
-
         body {
-
-            background-color: black;
-
-            color: white;
-
+            margin: 0;
+            font-family: Arial, sans-serif;
         }
-
-        .video-container {
-
+        .container2 {
+            background-color: #ccc;
+            border-radius: 15px;
+            padding: 20px;
+            margin: 20px;
             display: flex;
-
-            justify-content: space-around;
-
+            align-items: center;
         }
-
-        video {
-
-            width: 45%;
-
+        .text-content {
+            flex: 1;
         }
-
-        .video-list {
-
-            list-style-type: none;
-
-            padding: 0;
-
+        .text-content h2 {
+            margin: 5px 0;
         }
-
-        .video-list li {
-
-            cursor: pointer;
-
-            margin: 10px 0;
-
+        .image-content img {
+            border-radius: 10px;
+            max-width: 100%;
+            height: auto;
         }
-
     </style>
-
 </head>
-
 <body>
 
-    <h1>합성영상</h1>
+<div class="container2">
+    <div class="text-content">
+        <h2>첫 번째 문장</h2>
+        <h2>두 번째 문장</h2>
+        <h2>세 번째 문장</h2>
+    </div>
+    <div class="image-content">
+        <img src="https://via.placeholder.com/150" alt="Placeholder Image">
+    </div>
+</div>
 
-    <div class="video-container">
-
-        <video id="videoPlayer1" controls>
-
-            <source src="" type="video/mp4">
+</body>
+</html>

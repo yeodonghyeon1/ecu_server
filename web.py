@@ -57,4 +57,4 @@ def video_list():
 
 if __name__ == '__main__':
 
-    app.run(debug=True, host='192.168.0.107', port=6060)
+    app.run(debug=True, host='192.168.194.43', port=6060)
